@@ -16,6 +16,13 @@ end
 map({ "n", "x" }, "<c-j>", "5j")
 map({ "n", "x" }, "<c-k>", "5k")
 
+-- Increment/decrement
+map({ "n", "x" }, "+", "<c-a>")
+map({ "n", "x" }, "-", "<c-x>")
+
+-- select all
+map({ "n", "x" }, "<c-a>", "gg<S-v>G")
+
 map({ "n", "x" }, "<c-t>", "<Plug>(VM-Transpose)")
 map({ "n", "x" }, "<M-t>", "<Plug>(VM-Add-Cursor-At-Pos)")
 

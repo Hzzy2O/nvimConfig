@@ -33,7 +33,7 @@ return {
         shade_terminals = false,
         -- add --login so ~/.zprofile is loaded
         -- https://vi.stackexchange.com/questions/16019/neovim-terminal-not-reading-bash-profile/16021#16021
-        shell = "pwsh.exe -NoLogo",
+        -- shell = "pwsh.exe -NoLogo",
       })
     end,
     keys = {
@@ -70,5 +70,26 @@ return {
   {
     "sindrets/diffview.nvim",
     event = "BufRead",
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    lazy = true,
+    opts = {
+      enable_autocmd = false,
+    },
+  },
+  {
+    "numToStr/Comment.nvim",
+    opts = {
+      pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+      -- add any options here
+    },
+    lazy = false,
   },
 }
