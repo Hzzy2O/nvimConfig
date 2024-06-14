@@ -1,0 +1,24 @@
+{
+  "exportType": {
+    "body": ["export type ${1:first} = {${2:second}}"],
+    "key": "exportType",
+    "prefix": "exptp"
+  },
+  "exportInterface": {
+    "key": "exportInterface",
+    "prefix": "expint",
+    "body": ["export interface ${1:first} {${2:second}}"]
+  },
+  "exportDefault": {
+    "prefix": "exd",
+    "body": ["export default ${1:NAME}"]
+  },
+  "exportDestructing": {
+    "prefix": "exd",
+    "body": ["export { ${2:NAME} } = ${1:PATH}"]
+  },
+  "exportAs": {
+    "prefix": "exa",
+    "body": ["export { ${2:NAME} as ${3:ALIAS} } from '${1:PATH}'"]
+  }
+}

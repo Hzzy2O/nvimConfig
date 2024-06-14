@@ -3,6 +3,12 @@ return {
     "hrsh7th/nvim-cmp",
     dependencies = {
       "hrsh7th/cmp-emoji",
+      {
+        "Exafunction/codeium.nvim",
+        cmd = "Codeium",
+        build = ":Codeium Auth",
+        opts = {},
+      },
     },
     opts = function(_, opts)
       local cmp = require("cmp")
@@ -46,6 +52,12 @@ return {
             fallback()
           end
         end, { "i", "s" }),
+      })
+
+      table.insert(opts.sources, 1, {
+        name = "codeium",
+        group_index = 1,
+        priority = 100,
       })
     end,
   },

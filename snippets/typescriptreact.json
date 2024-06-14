@@ -1,0 +1,10 @@
+{
+  "exportFunction": {
+    "prefix": "export",
+    "body": [
+      "export function ${1:functionName}(${2:arg1}, ${3:arg2}) {",
+      "\t$0",
+      "}"
+    ]
+  }
+}

@@ -1,96 +1,100 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
-  opts = function(_, opts)
-    local mappings = opts.window.mappings
-    mappings["<tab>"] = function(state)
-      local node = state.tree:get_node()
-      if require("neo-tree.utils").is_expandable(node) then
-        state.commands["toggle_node"](state)
-      else
-        state.commands["open"](state)
-        vim.cmd("Neotree reveal")
-      end
-    end
-    mappings["h"] = function(state)
-      local node = state.tree:get_node()
-      if node.type == "directory" and node:is_expanded() then
-        require("neo-tree.sources.filesystem").toggle_directory(state, node)
-      else
-        require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
-      end
-    end
-    mappings["l"] = function(state)
-      local node = state.tree:get_node()
-      if node.type == "directory" then
-        if not node:is_expanded() then
-          require("neo-tree.sources.filesystem").toggle_directory(state, node)
-        elseif node:has_children() then
-          require("neo-tree.ui.renderer").focus_node(state, node:get_child_ids()[1])
-        end
-      else
-        state.commands["open"](state)
-      end
-    end
-    mappings["o"] = "system_open"
-    mappings["s"] = ""
-    mappings["S"] = ""
-
-    opts.filesystem = {
+  branch = "v3.x",
+  requires = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+    "MunifTanjim/nui.nvim",
+    -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    {
+      "s1n7ax/nvim-window-picker",
+      version = "2.*",
+      config = function()
+        require("window-picker").setup({
+          filter_rules = {
+            include_current_win = false,
+            autoselect_one = true,
+            -- filter using buffer options
+            bo = {
+              -- if the file type is one of following, the window will be ignored
+              filetype = { "neo-tree", "neo-tree-popup", "notify" },
+              -- if the buffer type is one of following, the window will be ignored
+              buftype = { "terminal", "quickfix" },
+            },
+          },
+        })
+      end,
+    },
+  },
+  config = {
+    sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+    open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
+    filesystem = {
       filtered_items = {
         visible = true,
         hide_dotfiles = false,
         hide_gitignored = false,
-        window = {
-          mappings = {
-            ["o"] = "system_open",
-          },
-        },
       },
-      commands = {
-        system_open = function(state)
+      bind_to_cwd = false,
+      follow_current_file = { enabled = true },
+      use_libuv_file_watcher = true,
+    },
+    window = {
+      mappings = {
+        ["<tab>"] = function(state)
           local node = state.tree:get_node()
-          local path = node:get_id()
-          local notify = require("notify")
-          local cmd = "cmd"
-          local args = { "/c", "start", '""' }
-          if require("utils").is_mac then
-            cmd = "open"
+          if require("neo-tree.utils").is_expandable(node) then
+            state.commands["toggle_node"](state)
+          else
+            state.commands["open"](state)
+            vim.cmd("Neotree reveal")
           end
-          local process = {
-            cmd = cmd,
-            args = args,
-            errors = "\n",
-            stderr = vim.loop.new_pipe(false),
-          }
-          table.insert(process.args, path)
-          process.handle, process.pid = vim.loop.spawn(
-            process.cmd,
-            { args = process.args, stdio = { nil, nil, process.stderr }, detached = true },
-            function(code)
-              process.stderr:read_stop()
-              process.stderr:close()
-              process.handle:close()
-              if code ~= 0 then
-                notify(string.format("system_open failed with return code %d: %s", code, process.error), "error")
-              end
-            end
-          )
-          table.remove(process.args)
-          if not process.handle then
-            notify(string.format("system_open failed to spawn command '%s': %s", process.cmd, process.pid), "error")
-            return
-          end
-          vim.loop.read_start(process.stderr, function(err, data)
-            if err then
-              return
-            end
-            if data then
-              process.errors = process.errors .. data
-            end
-          end)
-          vim.loop.unref(process.handle)
         end,
+        ["h"] = function(state)
+          local node = state.tree:get_node()
+          if node.type == "directory" and node:is_expanded() then
+            require("neo-tree.sources.filesystem").toggle_directory(state, node)
+          else
+            require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
+          end
+        end,
+        ["l"] = function(state)
+          local node = state.tree:get_node()
+          if node.type == "directory" then
+            if not node:is_expanded() then
+              require("neo-tree.sources.filesystem").toggle_directory(state, node)
+            elseif node:has_children() then
+              require("neo-tree.ui.renderer").focus_node(state, node:get_child_ids()[1])
+            end
+          else
+            state.commands["open"](state)
+          end
+        end,
+        ["Y"] = {
+          function(state)
+            local node = state.tree:get_node()
+            local path = node:get_id()
+            vim.fn.setreg("+", path, "c")
+          end,
+          desc = "copy path to clipboard",
+        },
+        ["O"] = {
+          function(state)
+            require("lazy.util").open(state.tree:get_node().path, { system = true })
+          end,
+          desc = "open with system application",
+        },
+        ["s"] = "",
+        ["S"] = "",
       },
-    }
-  end,
+    },
+    default_component_configs = {
+      indent = {
+        with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+        expander_collapsed = "",
+        expander_expanded = "",
+        expander_highlight = "NeoTreeExpander",
+      },
+    },
+  },
 }

@@ -1,0 +1,41 @@
+{
+  "exportDefaultArrowFunction": {
+    "prefix": "exdaf",
+    "body": [
+      "export default (${1:PARAMS}) => {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "exportDefaultFunction": {
+    "prefix": "exdf",
+    "body": [
+      "export default function ${1:NAME}(${2:PARAMS}) {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "exportDefaultClass": {
+    "prefix": "exdc",
+    "body": [
+      "export default class ${1:NAME} {",
+      "\t$0",
+      "}"
+    ]
+  },
+  "exportConst": {
+    "prefix": "exc",
+    "body": [
+      "export const ${1:NAME} = ${2:VALUE}"
+    ]
+  },
+  "exportFunction": {
+    "prefix": "exf",
+    "body": [
+      "export function ${1:NAME}(${2:PARAMS}) {",
+      "\t$0",
+      "}"
+    ]
+  }
+ 
+}

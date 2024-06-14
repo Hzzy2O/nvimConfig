@@ -5,10 +5,42 @@ return {
     opts = {
       ---@type lspconfig.options
       servers = {
+        volar = {},
+        vtsls = {
+          filetypes = "vue",
+          settings = {
+            vtsls = {
+              tsserver = {
+                globalPlugins = {
+                  {
+                    name = "@vue/typescript-plugin",
+                    location = LazyVim.get_pkg_path("vue-language-server", "/node_modules/@vue/language-server"),
+                    languages = { "vue" },
+                    configNamespace = "typescript",
+                    enableForWorkspaceTypeScriptVersions = true,
+                  },
+                },
+              },
+            },
+          },
+        },
         eslint = {
           settings = {
             -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
             workingDirectory = { mode = "auto" },
+          },
+        },
+        solidity = {
+          cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
+          filetypes = { "solidity" },
+          -- require("lspconfig.util").root_pattern "foundry.toml",
+          root_dir = require("lspconfig.util").find_git_ancestor,
+          single_file_support = true,
+          includePath = "",
+        },
+        unocss = {
+          handlers = {
+            ["textDocument/documentHighlight"] = function() end,
           },
         },
       },
@@ -16,7 +48,7 @@ return {
         eslint = function()
           vim.api.nvim_create_autocmd("BufWritePre", {
             callback = function(event)
-              if not require("lazyvim.plugins.lsp.format").enabled() then
+              if not require("lazyvim.util").format.enabled() then
                 -- exit early if autoformat is not enabled
                 return
               end

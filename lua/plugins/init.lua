@@ -14,10 +14,19 @@ return {
     end,
   },
   {
+    "nvim-lua/plenary.nvim",
+  },
+  {
     "Hzzy2O/cryptowatch.nvim",
+    event = "VeryLazy",
     dependencies = {
-      {
-        "nvim-lua/plenary.nvim",
+      "nvim-lua/plenary.nvim",
+    },
+    opts = {
+      coins = {
+        { coin = "BTC" },
+        { coin = "ETH" },
+        { coin = "SOL" },
       },
     },
   },
@@ -33,20 +42,20 @@ return {
         shade_terminals = false,
         -- add --login so ~/.zprofile is loaded
         -- https://vi.stackexchange.com/questions/16019/neovim-terminal-not-reading-bash-profile/16021#16021
-        -- shell = "pwsh.exe -NoLogo",
+        -- shell = "fish",
       })
     end,
     keys = {
       { [[<C-\>]] },
-      { "<M-1>", "<Cmd>ToggleTerm size=40 direction=horizontal<Cr>", desc = "Terminal Horizontal" },
+      { "<M-1>", "<Cmd>ToggleTerm direction=horizontal name=hor<Cr>", desc = "Terminal Horizontal" },
       {
         "<M-2>",
-        "<cmd>ToggleTerm size=20 direction=float<cr>",
+        "<cmd>ToggleTerm direction=float name=flo<cr>",
         desc = "Terminal Float",
       },
       {
         "<M-3>",
-        "<cmd>ToggleTerm size=55 direction=vertical<cr>",
+        "<cmd>ToggleTerm size=55 direction=vertical name=ver<cr>",
         desc = "Terminal Vertical",
       },
     },
@@ -59,14 +68,6 @@ return {
       vim.g.gitblame_enabled = 0
     end,
   },
-  -- {
-  --   "ray-x/lsp_signature.nvim",
-  --   config = function()
-  --     require("lsp_signature").setup({
-  --       doc_lines = 0,
-  --     })
-  --   end,
-  -- },
   {
     "sindrets/diffview.nvim",
     event = "BufRead",
@@ -91,5 +92,15 @@ return {
       -- add any options here
     },
     lazy = false,
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = {
+      "rafamadriz/friendly-snippets",
+      config = function()
+        require("luasnip.loaders.from_vscode").lazy_load()
+        require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("config") .. "/snippets/" })
+      end,
+    },
   },
 }

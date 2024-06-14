@@ -1,7 +1,7 @@
 return {
   "nvimtools/none-ls.nvim",
   event = { "BufReadPre", "BufNewFile" },
-  dependencies = { "mason.nvim" },
+  dependencies = { "nvimtools/none-ls-extras.nvim" },
   opts = function()
     local nls = require("null-ls")
     return {
@@ -11,7 +11,9 @@ return {
         nls.builtins.diagnostics.fish,
         nls.builtins.formatting.stylua,
         nls.builtins.formatting.shfmt,
-        nls.builtins.formatting.eslint_d,
+        require("none-ls.code_actions.eslint_d"),
+        require("none-ls.diagnostics.eslint_d"),
+        require("none-ls.formatting.eslint_d"),
         nls.builtins.formatting.prettier.with({
           condition = function(utils)
             local has_file = utils.root_has_file({
@@ -25,14 +27,25 @@ return {
             return has_file
           end,
         }),
-
         -- nls.builtins.diagnostics.flake8,
       },
-      -- methods = {
-      --   code_actions = {
-      --
-      --   }
-      -- }
+      on_attach = function(current_client, bufnr)
+        if current_client.supports_method("textDocument/formatting") then
+          vim.api.nvim_clear_autocmds({ buffer = bufnr })
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.format({
+                filter = function(client)
+                  -- only use null-ls for formatting instead of lsp server
+                  return client.name == "null-ls"
+                end,
+                bufnr = bufnr,
+              })
+            end,
+          })
+        end
+      end,
     }
   end,
 }
