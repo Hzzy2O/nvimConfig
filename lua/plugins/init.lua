@@ -1,5 +1,18 @@
 return {
   {
+    "sourcegraph/sg.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim", --[[ "nvim-telescope/telescope.nvim ]]
+    },
+    config = function()
+      -- local shell = require("utils").is_windows ?
+      require("sg").setup({})
+    end,
+
+    -- If you have a recent version of lazy.nvim, you don't need to add this!
+    build = "nvim -l build/init.lua",
+  },
+  {
     "echasnovski/mini.animate",
     event = "VeryLazy",
     opts = function()
@@ -18,7 +31,6 @@ return {
   },
   {
     "Hzzy2O/cryptowatch.nvim",
-    event = "VeryLazy",
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
@@ -102,5 +114,12 @@ return {
         require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("config") .. "/snippets/" })
       end,
     },
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+  },
+  {
+    "0xmovses/move.vim",
   },
 }

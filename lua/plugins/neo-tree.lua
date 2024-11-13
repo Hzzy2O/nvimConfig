@@ -1,7 +1,10 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
-  requires = {
+  -- dependencies = {
+  --   "s1n7ax/nvim-window-picker",
+  -- },
+  dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
     "MunifTanjim/nui.nvim",
@@ -58,18 +61,19 @@ return {
             require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
           end
         end,
-        ["l"] = function(state)
-          local node = state.tree:get_node()
-          if node.type == "directory" then
-            if not node:is_expanded() then
-              require("neo-tree.sources.filesystem").toggle_directory(state, node)
-            elseif node:has_children() then
-              require("neo-tree.ui.renderer").focus_node(state, node:get_child_ids()[1])
-            end
-          else
-            state.commands["open"](state)
-          end
-        end,
+        ["l"] = "open_with_window_picker",
+        -- ["l"] = function(state)
+        --   local node = state.tree:get_node()
+        --   if node.type == "directory" then
+        --     if not node:is_expanded() then
+        --       require("neo-tree.sources.filesystem").toggle_directory(state, node)
+        --     elseif node:has_children() then
+        --       require("neo-tree.ui.renderer").focus_node(state, node:get_child_ids()[1])
+        --     end
+        --   else
+        --     state.commands["open"](state)
+        --   end
+        -- end,
         ["Y"] = {
           function(state)
             local node = state.tree:get_node()
