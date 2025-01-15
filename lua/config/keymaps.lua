@@ -29,6 +29,9 @@ map({ "n", "x" }, "<M-t>", "<Plug>(VM-Add-Cursor-At-Pos)")
 map({ "n", "x" }, "<leader>gv", "<cmd>DiffviewFileHistory<cr>")
 map({ "n", "x" }, "<leader>gV", "<cmd>lua diffview_file_history_with_current_file()<cr>")
 map({ "n", "x" }, "<leader>gd", "<cmd>DiffviewClose<cr>")
+map({ "n", "x" }, "<Leader>nf", ":lua require('neogen').generate()<CR>")
+
+map({ "n", "x" }, "<Leader>rn", ":IncRename ")
 
 vim.cmd("tnoremap <C-x> <C-\\><C-n>")
 vim.cmd("noremap <C-b> <C-v>")

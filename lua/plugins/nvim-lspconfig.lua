@@ -9,6 +9,13 @@ return {
           settings = {
             -- helps eslint find the eslintrc when it's placed in a subfolder instead of the cwd root
             workingDirectory = { mode = "auto" },
+            root_dir = require("lspconfig.util").root_pattern(
+              ".eslintrc*",
+              ".eslintrc.js",
+              ".eslintrc.json",
+              ".eslintrc.yaml",
+              ".eslintrc.yml"
+            ),
           },
         },
         solidity = {
@@ -24,6 +31,11 @@ return {
             ["textDocument/documentHighlight"] = function() end,
           },
         },
+        move_analyzer = {
+          -- cmd = { os.getenv("HOME") .. "/.cargo/bin/move-analyzer" },
+          filetypes = { "move" },
+          root_dir = require("lspconfig.util").root_pattern("Move.toml", ".git"),
+        },
       },
       setup = {
         eslint = function()
@@ -34,13 +46,13 @@ return {
                 return
               end
 
-              local client = vim.lsp.get_active_clients({ bufnr = event.buf, name = "eslint" })[1]
-              if client then
-                local diag = vim.diagnostic.get(event.buf, { namespace = vim.lsp.diagnostic.get_namespace(client.id) })
-                if #diag > 0 then
-                  vim.cmd("EslintFixAll")
-                end
-              end
+              local client = vim.lsp.get_clients({ bufnr = event.buf, name = "eslint" })
+              -- if client then
+              --   local diag = vim.diagnostic.get(event.buf, { namespace = vim.lsp.diagnostic.get_namespace(client.id) })
+              --   if #diag > 0 then
+              --     vim.cmd("EslintFixAll")
+              --   end
+              -- end
             end,
           })
         end,

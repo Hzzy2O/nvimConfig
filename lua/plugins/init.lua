@@ -1,15 +1,14 @@
 return {
+  "mg979/vim-visual-multi",
+  "0xmovses/move.vim",
   {
     "sourcegraph/sg.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim", --[[ "nvim-telescope/telescope.nvim ]]
     },
     config = function()
-      -- local shell = require("utils").is_windows ?
       require("sg").setup({})
     end,
-
-    -- If you have a recent version of lazy.nvim, you don't need to add this!
     build = "nvim -l build/init.lua",
   },
   {
@@ -27,36 +26,24 @@ return {
     end,
   },
   {
-    "nvim-lua/plenary.nvim",
-  },
-  {
     "Hzzy2O/cryptowatch.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
     opts = {
       coins = {
-        { coin = "BTC" },
-        { coin = "ETH" },
+        { coin = "SUI" },
+        { coin = "ACT" },
         { coin = "SOL" },
       },
     },
   },
   {
-    "mg979/vim-visual-multi",
-  },
-  {
     "akinsho/toggleterm.nvim",
-    config = function()
-      -- local shell = require("utils").is_windows ?
-      require("toggleterm").setup({
-        open_mapping = [[<c-\>]],
-        shade_terminals = false,
-        -- add --login so ~/.zprofile is loaded
-        -- https://vi.stackexchange.com/questions/16019/neovim-terminal-not-reading-bash-profile/16021#16021
-        -- shell = "fish",
-      })
-    end,
+    opts = {
+      open_mapping = [[<c-\>]],
+      shade_terminals = false,
+    },
     keys = {
       { [[<C-\>]] },
       { "<M-1>", "<Cmd>ToggleTerm direction=horizontal name=hor<Cr>", desc = "Terminal Horizontal" },
@@ -85,41 +72,23 @@ return {
     event = "BufRead",
   },
   {
-    "windwp/nvim-ts-autotag",
-    config = function()
-      require("nvim-ts-autotag").setup()
-    end,
-  },
-  {
-    "JoosepAlviste/nvim-ts-context-commentstring",
-    lazy = true,
-    opts = {
-      enable_autocmd = false,
-    },
-  },
-  {
     "numToStr/Comment.nvim",
     opts = {
       pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      -- add any options here
     },
     lazy = false,
   },
   {
-    "L3MON4D3/LuaSnip",
-    dependencies = {
-      "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-        require("luasnip.loaders.from_vscode").lazy_load({ paths = vim.fn.stdpath("config") .. "/snippets/" })
-      end,
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {
+      presets = { inc_rename = true },
     },
   },
   {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-  },
-  {
-    "0xmovses/move.vim",
+    "smjonas/inc-rename.nvim",
+    config = function()
+      require("inc_rename").setup({})
+    end,
   },
 }

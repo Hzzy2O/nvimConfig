@@ -9,3 +9,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.wo.conceallevel = 0
   end,
 })
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "ToggleMyPrompt",
+  callback = function()
+    require("avante.config").override({ system_prompt = "MY CUSTOM SYSTEM PROMPT" })
+  end,
+})
+
+vim.keymap.set("n", "<leader>am", function()
+  vim.api.nvim_exec_autocmds("User", { pattern = "ToggleMyPrompt" })
+end, { desc = "avante: toggle my prompt" })

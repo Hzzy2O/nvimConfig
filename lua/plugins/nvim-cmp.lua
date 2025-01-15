@@ -1,64 +1,29 @@
 return {
   {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-emoji",
-      {
-        "Exafunction/codeium.nvim",
-        cmd = "Codeium",
-        build = ":Codeium Auth",
-        opts = {},
+    "saghen/blink.cmp",
+    -- optional: provides snippets for the snippet source
+    dependencies = { "rafamadriz/friendly-snippets" },
+    -- use a release tag to download pre-built binaries
+    version = "*",
+    opts = {
+      -- 'default' for mappings similar to built-in completion
+      -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+      -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+      -- See the full "keymap" documentation for information on defining your own keymap.
+      keymap = {
+        preset = "default",
+        ["<S-Tab>"] = { "select_prev", "fallback" },
+        ["<Tab>"] = { "select_next", "fallback" },
+        ["<Up>"] = { "select_prev", "fallback" },
+        ["<Down>"] = { "select_next", "fallback" },
+        ["<Enter>"] = { "accept", "fallback" },
+        ["<C-f>"] = {
+          function(cmp)
+            cmp.show({ providers = { "snippets" } })
+          end,
+        },
       },
     },
-    opts = function(_, opts)
-      local cmp = require("cmp")
-
-      for _, source in ipairs(opts.sources) do
-        if source.name == "nvim_lsp" then
-          source.trigger_characters = { "-" }
-          source.entry_filter = nil
-        end
-      end
-      opts.sources = cmp.config.sources(opts.sources)
-
-      local has_words_before = function()
-        unpack = unpack or table.unpack
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
-
-      local luasnip = require("luasnip")
-
-      opts.mapping = vim.tbl_extend("force", opts.mapping, {
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item()
-            -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
-            -- this way you will only jump inside the snippet region
-          elseif luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-          elseif has_words_before() then
-            cmp.complete()
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          elseif luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-      })
-
-      table.insert(opts.sources, 1, {
-        name = "codeium",
-        group_index = 1,
-        priority = 100,
-      })
-    end,
+    opts_extend = { "sources.default" },
   },
 }
