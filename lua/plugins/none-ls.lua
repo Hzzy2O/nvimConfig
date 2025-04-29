@@ -4,15 +4,7 @@ return {
   dependencies = { "nvimtools/none-ls-extras.nvim" },
   opts = function()
     local nls = require("null-ls")
-    local has_eslintrc = function(utils)
-      return utils.root_has_file({
-        ".eslintrc",
-        ".eslintrc.js",
-        ".eslintrc.json",
-        ".eslintrc.mjs",
-        ".eslintrc.cjs",
-      })
-    end
+
     return {
       root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git"),
       sources = {
@@ -22,17 +14,35 @@ return {
         nls.builtins.formatting.shfmt,
         require("none-ls.code_actions.eslint_d").with({
           condition = function(utils)
-            return has_eslintrc(utils)
+            return utils.root_has_file({
+              ".eslintrc",
+              ".eslintrc.js",
+              ".eslintrc.json",
+              ".eslintrc.mjs",
+              ".eslintrc.cjs",
+            })
           end,
         }),
         require("none-ls.diagnostics.eslint_d").with({
           condition = function(utils)
-            return has_eslintrc(utils)
+            return utils.root_has_file({
+              ".eslintrc",
+              ".eslintrc.js",
+              ".eslintrc.json",
+              ".eslintrc.mjs",
+              ".eslintrc.cjs",
+            })
           end,
         }),
         require("none-ls.formatting.eslint_d").with({
           condition = function(utils)
-            return has_eslintrc(utils)
+            return utils.root_has_file({
+              ".eslintrc",
+              ".eslintrc.js",
+              ".eslintrc.json",
+              ".eslintrc.mjs",
+              ".eslintrc.cjs",
+            })
           end,
           runtime_condition = function(params)
             return params.root:match("~/code/work") ~= nil
@@ -51,24 +61,15 @@ return {
             return has_file
           end,
         }),
+        nls.builtins.formatting.biome.with({
+          condition = function(utils)
+            return utils.root_has_file({
+              "biome.json",
+            })
+          end,
+        }),
+        -- nls.builtins.diagnostics.flake8,
       },
-      on_attach = function(current_client, bufnr)
-        if current_client.supports_method("textDocument/formatting") then
-          vim.api.nvim_clear_autocmds({ buffer = bufnr })
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            buffer = bufnr,
-            callback = function()
-              vim.lsp.buf.format({
-                filter = function(client)
-                  -- only use null-ls for formatting instead of lsp server
-                  return client.name == "null-ls"
-                end,
-                bufnr = bufnr,
-              })
-            end,
-          })
-        end
-      end,
     }
   end,
 }

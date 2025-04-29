@@ -32,6 +32,7 @@ map({ "n", "x" }, "<leader>gd", "<cmd>DiffviewClose<cr>")
 map({ "n", "x" }, "<Leader>nf", ":lua require('neogen').generate()<CR>")
 
 map({ "n", "x" }, "<Leader>rn", ":IncRename ")
+map({ "n", "x" }, "<Leader>uM", ":lua require('smear_cursor').toggle()<CR>")
 
 vim.cmd("tnoremap <C-x> <C-\\><C-n>")
 vim.cmd("noremap <C-b> <C-v>")

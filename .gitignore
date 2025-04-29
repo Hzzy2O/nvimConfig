@@ -8,3 +8,4 @@ foo.*
 data
 .DS_Store
 lazyvim.json
+lazy-lock.json

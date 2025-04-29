@@ -1,6 +1,7 @@
 return {
   "mg979/vim-visual-multi",
   "0xmovses/move.vim",
+  "augmentcode/augment.vim",
   {
     "sourcegraph/sg.nvim",
     dependencies = {

@@ -1,55 +1,20 @@
 return {
   "yetone/avante.nvim",
   event = "VeryLazy",
-  lazy = false,
-  version = false, -- set this if you want to always pull the latest change
-  opts = function()
-    local wk = require("which-key")
-    wk.add({
-      { "<leader>a", group = "+ai" },
-    })
-    return {
-      provider = "openrouter",
-      auto_suggestions_provider = "openrouter",
-      behaviour = {
-        auto_suggestions = true, -- Experimental stage
-        auto_set_highlight_group = true,
-        auto_set_keymaps = true,
-        auto_apply_diff_after_generation = false,
-        support_paste_from_clipboard = false,
-      },
-      vendors = {
-        openrouter = {
-          endpoint = "https://openrouter.ai/api/v1/chat/completions",
-          api_key_name = "OPENROUTER_API_KEY",
-          model = "nousresearch/hermes-3-llama-3.1-405b:free",
-          parse_curl_args = function(opts, code_opts)
-            return {
-              url = opts.endpoint,
-              headers = {
-                ["Accept"] = "application/json",
-                ["Content-Type"] = "application/json",
-                ["Authorization"] = "Bearer " .. os.getenv(opts.api_key_name),
-              },
-              body = {
-                model = opts.model,
-                messages = { -- you can make your own message, but this is very advanced
-                  { role = "system", content = code_opts.system_prompt },
-                  { role = "user", content = require("avante.providers.openai").get_user_message(code_opts) },
-                },
-                temperature = 0,
-                max_tokens = 4096,
-                stream = true, -- this will be set by default.
-              },
-            }
-          end,
-          parse_response_data = function(data_stream, event_state, opts)
-            require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-          end,
-        },
-      },
-    }
-  end,
+  version = false, -- Never set this value to "*"! Never!
+  opts = {
+    -- add any opts here
+    -- for example
+    provider = "gemini",
+    gemini = {
+      endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
+      model = "gemini-2.5-pro-exp-03-25", -- your desired model (or use gpt-4o, etc.)
+      timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+      temperature = 0,
+      max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
+      --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+    },
+  },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
@@ -58,6 +23,13 @@ return {
     "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
+    --- The below dependencies are optional,
+    "echasnovski/mini.pick", -- for file_selector provider mini.pick
+    "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+    "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+    "ibhagwan/fzf-lua", -- for file_selector provider fzf
+    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+    "zbirenbaum/copilot.lua", -- for providers='copilot'
     {
       -- support for image pasting
       "HakonHarnes/img-clip.nvim",
